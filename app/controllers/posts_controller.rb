@@ -15,7 +15,7 @@ class PostsController < ApplicationController
     @post = @user.posts.new(post_params)
     @post.author = @user.email
     if @post.save
-      render json: @post, status: :created
+      render json: @user.posts, status: :created
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -33,7 +33,7 @@ class PostsController < ApplicationController
   def destroy
       @post.destroy
       if @post
-        render json: 'Post destroyed', status: :ok
+        render json: @user.posts, status: :ok
       else
         render json: @post.errors, status: :unprocessable_entity
       end
