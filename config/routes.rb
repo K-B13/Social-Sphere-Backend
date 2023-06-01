@@ -11,7 +11,9 @@ Rails.application.routes.draw do
   }
   get 'current_user', to: 'current_user#index'
   resources :users do
-    resources :posts
+    resources :posts do
+      resources :comments
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
