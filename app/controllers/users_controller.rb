@@ -6,7 +6,7 @@ def index
   @user = current_user
 
   render json: {
-      status: {code: 200, message: 'Logged in sucessfully.'}, data: @user, status: :ok
+      status: {code: 200, message: 'Here is current user'}, data: @user, status: :ok
 }
 end
 end

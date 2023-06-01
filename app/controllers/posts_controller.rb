@@ -7,7 +7,7 @@ class PostsController < ApplicationController
   def index
     @posts = @user.posts
     render json: {
-      status: {code: 200, message: 'Logged in sucessfully.'}, data: @posts, status: :ok
+      status: {code: 200, message: 'Here are all the posts'}, data: @posts, status: :ok
 }
   end
 
