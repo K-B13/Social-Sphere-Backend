@@ -35,7 +35,8 @@ class PostsController < ApplicationController
   def destroy
       @post.destroy
       if @post
-        render json: @user.posts, status: :ok
+        sorted_posts = @user.posts.sort {|a, b|  b.updated_at <=> a.updated_at }
+        render json: sorted_posts, status: :ok
       else
         render json: @post.errors, status: :unprocessable_entity
       end

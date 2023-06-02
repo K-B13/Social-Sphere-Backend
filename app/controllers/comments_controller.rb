@@ -6,6 +6,7 @@ class CommentsController < ApplicationController
 
   def index
     @comments = @post.comments
+    @comments = @comments.sort {|a, b|  b.updated_at <=> a.updated_at }
     render json: {
       status: {code: 200, message: 'Here are all comments'}, data: @comments, status: :ok
 }
@@ -16,7 +17,8 @@ class CommentsController < ApplicationController
     @comment.user_id = @user.id
     @comment.author = @user.email
     if @comment.save
-      render json: @comment, status: :created
+      @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
+      render json: @sorted_comments, status: :created
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -25,7 +27,7 @@ class CommentsController < ApplicationController
   def update
     @comment.update(comment_params)
     if @comment.save
-      render json: @comment, status: :created
+      render json: @post.comments, status: :created
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -34,7 +36,8 @@ class CommentsController < ApplicationController
   def destroy
     @comment.destroy
     if @comment
-      render json: 'Comment destroyed', status: :ok
+      @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
+      render json: @sorted_comments, status: :ok
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
