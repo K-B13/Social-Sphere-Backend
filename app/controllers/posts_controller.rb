@@ -14,7 +14,7 @@ class PostsController < ApplicationController
 
   def create
     @post = @user.posts.new(post_params)
-    @post.author = @user.email
+    @post.author = @user.username
     if @post.save
       sorted_posts = @user.posts.sort {|a, b|  b.updated_at <=> a.updated_at }
       render json: sorted_posts, status: :created
@@ -26,7 +26,8 @@ class PostsController < ApplicationController
   def update
     @post.update(post_params)
     if @post.save
-      render json: @post, status: :created
+      @sorted_posts = @user.posts.sort {|a, b|  b.updated_at <=> a.updated_at }
+      render json: @sorted_posts, status: :created
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -35,8 +36,8 @@ class PostsController < ApplicationController
   def destroy
       @post.destroy
       if @post
-        sorted_posts = @user.posts.sort {|a, b|  b.updated_at <=> a.updated_at }
-        render json: sorted_posts, status: :ok
+        @sorted_posts = @user.posts.sort {|a, b|  b.updated_at <=> a.updated_at }
+        render json: @sorted_posts, status: :ok
       else
         render json: @post.errors, status: :unprocessable_entity
       end

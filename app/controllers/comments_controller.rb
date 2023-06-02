@@ -15,7 +15,7 @@ class CommentsController < ApplicationController
   def create
     @comment = @post.comments.new(comment_params)
     @comment.user_id = @user.id
-    @comment.author = @user.email
+    @comment.author = @user.username
     if @comment.save
       @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
       render json: @sorted_comments, status: :created
@@ -27,7 +27,8 @@ class CommentsController < ApplicationController
   def update
     @comment.update(comment_params)
     if @comment.save
-      render json: @post.comments, status: :created
+      @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
+      render json: @sorted_comments, status: :created
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
