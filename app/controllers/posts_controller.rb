@@ -6,6 +6,7 @@ class PostsController < ApplicationController
 
   def index
     @posts = @user.posts
+    @posts = @posts.sort {|a, b|  b.updated_at <=> a.updated_at }
     render json: {
       status: {code: 200, message: 'Here are all the posts'}, data: @posts, status: :ok
 }
@@ -15,7 +16,8 @@ class PostsController < ApplicationController
     @post = @user.posts.new(post_params)
     @post.author = @user.email
     if @post.save
-      render json: @user.posts, status: :created
+      sorted_posts = @user.posts.sort {|a, b|  b.updated_at <=> a.updated_at }
+      render json: sorted_posts, status: :created
     else
       render json: @post.errors, status: :unprocessable_entity
     end
