@@ -2,11 +2,24 @@ class UsersController < ApplicationController
 
   respond_to :json
 
-def index
-  @user = current_user
+  def index
+    @users = User.all
+    render json: {
+      status: {code: 200, message: 'Here is current user'}, data: @users, status: :ok
+  } 
+  end
+  def update
+    @user = User.find(params[:id])
+    @user.update(user_params)
+    if @user.save
+      render json: @user, status: :created
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
 
-  render json: {
-      status: {code: 200, message: 'Here is current user'}, data: @user, status: :ok
-}
-end
+  private
+  def user_params
+    params.require(:user).permit(:name, :bio, :hometown, :dob, :username)
+  end
 end
