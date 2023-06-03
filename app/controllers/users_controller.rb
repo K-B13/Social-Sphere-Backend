@@ -1,11 +1,13 @@
 class UsersController < ApplicationController
+  
 
   respond_to :json
+  require 'fuzzy_match'
 
   def index
     @users = User.all
     render json: {
-      status: {code: 200, message: 'Here is current user'}, data: @users, status: :ok
+      status: {code: 200, message: 'Here is current user'}, data: @users
   } 
   end
 
@@ -25,7 +27,13 @@ class UsersController < ApplicationController
   end
 
   def search
-    
+    query = params[:query]
+    users = User.all
+
+    fuzzy_matcher = FuzzyMatch.new(users, read: :username)
+    search_results = fuzzy_matcher.find_all(query)
+
+    render json: search_results
   end
 
   private

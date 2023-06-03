@@ -95,6 +95,7 @@ GEM
       concurrent-ruby (~> 1.0)
       zeitwerk (~> 2.6)
     erubi (1.12.0)
+    fuzzy_match (2.1.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
     i18n (1.13.0)
@@ -197,6 +198,7 @@ DEPENDENCIES
   debug
   devise
   devise-jwt
+  fuzzy_match
   jsonapi-serializer
   pg (~> 1.1)
   puma (~> 5.0)
