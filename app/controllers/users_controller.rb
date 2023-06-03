@@ -28,9 +28,10 @@ class UsersController < ApplicationController
 
   def search
     query = params[:query]
+    search_key = params[:search_key]
     users = User.all
 
-    fuzzy_matcher = FuzzyMatch.new(users, read: :username)
+    fuzzy_matcher = FuzzyMatch.new(users, read: search_key)
     search_results = fuzzy_matcher.find_all(query)
 
     render json: search_results
