@@ -23,11 +23,13 @@ class FriendRequest < ApplicationRecord
     Friendship.transaction do
       Friendship.create(user: sender, friend: receiver)
       update(status: :accepted)
+      destroy
     end
   end
 
   def reject
     update(status: :rejected)
+    destroy
   end
 
 end

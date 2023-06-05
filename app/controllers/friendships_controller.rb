@@ -11,9 +11,16 @@ class FriendshipsController < ApplicationController
   end
 
   def destroy
-    @friendship = Friendship.find(params[:id])
-    @friendship.destroy
-    head :no_content
+    current_user = User.find(params[:current_user_id])
+    friend_user = User.find(params[:friend_user_id])
+    @friendship = current_user.friendships.find_by(friend_id: friend_user.id)
+    
+    if @friendship
+      @friendship.destroy
+      head :no_content
+    else
+      head :not_found
+    end
   end
 
   private
