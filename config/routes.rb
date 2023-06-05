@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   get '/users/getFriends/:id', to: 'users#retrieve_friends'
   get '/users/allFriends/:id', to: 'users#all_friends' 
 
+  get '/users/:user_id/user_and_friends_posts', to: 'posts#homepage'
+
   resources :friendships, only: [:create]
 
   resources :friend_requests, only: [:create, :destroy]
