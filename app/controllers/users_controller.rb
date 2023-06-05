@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   
   respond_to :json
   require 'fuzzy_match'
-  before_action :find_user, only: [:show_user, :update, :retrieve_friends]
+  before_action :find_user, only: [:show_user, :update, :retrieve_friends, :all_friends]
 
   def index
     @users = User.all
@@ -13,11 +13,13 @@ class UsersController < ApplicationController
 
   def show_user
     @posts = @user.posts
+    @posts = @posts.sort {|a, b|  b.updated_at <=> a.updated_at }
+    
     @current_user = User.find(params[:user_id])
     is_friend = @current_user.friends.include?(@user)
     @lim_friends = @user.friends.limit(5)
 
-    has_friend_request = @current_user.sent_friend_requests.exists?(receiver: @user)
+    has_friend_request = @current_user.sent_friend_requests.exists?(receiver: @user) || @user.sent_friend_requests.exists?(receiver: @current_user)
     
     render json: {user: @user, posts: @posts, isFriend: is_friend, hasFriendRequest: has_friend_request, currentUser: @current_user, friends: @lim_friends}
   end
@@ -47,8 +49,13 @@ class UsersController < ApplicationController
     render json: @lim_friends
   end
 
+  def all_friends
+    @friends = @user.friends
+    render json: {friends: @friends, user: @user}
+  end
+
   private
-  
+
   def user_params
     params.require(:user).permit(:name, :bio, :hometown, :dob, :username)
   end

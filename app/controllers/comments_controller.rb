@@ -12,10 +12,10 @@ class CommentsController < ApplicationController
 }
   end
 
-  def create
+  def create_comment
     @comment = @post.comments.new(comment_params)
     @comment.user_id = @user.id
-    @comment.author = @user.username
+    @comment.author = User.find(params[:id]).username
     if @comment.save
       @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
       render json: @sorted_comments, status: :created
