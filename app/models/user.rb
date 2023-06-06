@@ -2,6 +2,7 @@ class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
   has_many :posts, dependent: :destroy
   has_many :comments, through: :posts
+  has_many :likes, dependent: :destroy
 
   has_many :friendships, dependent: :destroy
   has_many :friends, through: :friendships

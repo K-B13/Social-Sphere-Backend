@@ -3,12 +3,16 @@ class CommentsController < ApplicationController
   before_action :find_user
   before_action :find_post
   before_action :find_comment, only: [:update, :destroy]
+  before_action :load_comments
 
   def index
-    @comments = @post.comments
-    @comments = @comments.sort {|a, b|  b.updated_at <=> a.updated_at }
+    serialize_comments
     render json: {
-      status: {code: 200, message: 'Here are all comments'}, data: @comments, status: :ok
+      status: {
+        code: 200, 
+        message: 'Here are all comments'}, 
+      data: @serialized_comments, 
+      status: :ok
 }
   end
 
@@ -16,9 +20,10 @@ class CommentsController < ApplicationController
     @comment = @post.comments.new(comment_params)
     @comment.user_id = @user.id
     @comment.author = User.find(params[:id]).username
+
     if @comment.save
-      @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
-      render json: @sorted_comments, status: :created
+      serialize_comments
+      render json: @serialized_comments, status: :created
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -27,8 +32,8 @@ class CommentsController < ApplicationController
   def update
     @comment.update(comment_params)
     if @comment.save
-      @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
-      render json: @sorted_comments, status: :created
+      serialize_comments
+      render json: @serialized_comments, status: :created
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -37,8 +42,8 @@ class CommentsController < ApplicationController
   def destroy
     @comment.destroy
     if @comment
-      @sorted_comments = @post.comments.sort {|a, b| b.updated_at <=> a.updated_at }
-      render json: @sorted_comments, status: :ok
+      serialize_comments
+      render json: @serialized_comments, status: :ok
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -60,5 +65,24 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:content)
+  end
+
+  def load_comments
+    @comments = @post.comments.order(updated_at: :desc)
+  end
+
+  def serialize_comments
+    @serialized_comments = @comments.map do |comment|
+      {
+        id: comment.id,
+        content: comment.content,
+        author: comment.author,
+        updated_at: comment.updated_at,
+        like_count: comment.likes.count,
+        liked_by: comment.likes.map { |like| like.user.username },
+        user_id: comment.user_id,
+        post_id: comment.post_id
+      }
+    end
   end
 end
