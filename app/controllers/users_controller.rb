@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
     @current_user = User.find(params[:user_id])
     is_friend = @current_user.friends.include?(@user)
-    @lim_friends = @user.friends.limit(5)
+    @lim_friends = @user.friends.limit(4)
 
     has_friend_request = @current_user.sent_friend_requests.exists?(receiver: @user) || @user.sent_friend_requests.exists?(receiver: @current_user)
 
@@ -63,7 +63,7 @@ class UsersController < ApplicationController
   end
 
   def retrieve_friends
-    @lim_friends = @user.friends.limit(5)
+    @lim_friends = @user.friends.limit(4)
     render json: @lim_friends
   end
 
