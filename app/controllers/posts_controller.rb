@@ -6,7 +6,9 @@ class PostsController < ApplicationController
   respond_to :json
 
   def index
+    # Grabs all the posts for a specific user.
     @posts = @user.posts.includes(:likes)
+    # Sorts the posts by their data.
     @sorted_posts = @posts.order(updated_at: :desc)
     render json: {
       status: {
@@ -20,8 +22,11 @@ class PostsController < ApplicationController
   end
 
   def create
+    # Creates a new post for a given user with the information passed from the user.
     @post = @user.posts.new(post_params)
+    # Makes the author of the post the user the post is associated with.
     @post.author = @user.username
+    # If the post can save return the information else return error.
     if @post.save
       @sorted_posts = @user.posts.includes(:likes).order(updated_at: :desc)
       render json: {
@@ -34,6 +39,7 @@ class PostsController < ApplicationController
   end
 
   def update
+    # Update a post with the given information and if it can save send it back else send error
     @post.update(post_params)
     if @post.save
       @sorted_posts = @user.posts.includes(:likes).order(updated_at: :desc)
@@ -62,8 +68,6 @@ class PostsController < ApplicationController
   end
 
   def homepage
-    # @friend_ids = @user.friends.pluck(:id)
-    # @user_and_friends_posts = Post.where(user_id: [@friend_ids, @user.id].flatten).order(updated_at: :desc)
     
     render json: { 
       user: @user, 
@@ -85,11 +89,14 @@ class PostsController < ApplicationController
   end
 
   def get_all_posts
+    # 'Plucks' all the friend id's from a user and stores them in an array.
     @friend_ids = @user.friends.pluck(:id)
+    # Gets all the user posts and friends posts based on their ids and 'flattens' them so they are in an array on the same level.
     @user_and_friends_posts = Post.where(user_id: [@friend_ids, @user.id].flatten).order(updated_at: :desc)
   end
 
   def serialize_posts(posts)
+    # Expands what is sent back to include likes and liked by associated with the posts/
     posts.map do |post|
       {
         id: post.id,

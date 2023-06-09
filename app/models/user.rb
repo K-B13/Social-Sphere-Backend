@@ -22,6 +22,8 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
 
   private
+
+  # Destroy all friend requests sent and received by the user on deletion of their account.
   def cleanup_friend_requests
     sent_friend_requests.destroy_all
     received_friend_requests.destroy_all
