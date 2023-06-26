@@ -312,7 +312,7 @@ Devise.setup do |config|
 
   # Configure devise to work with the JWT particularly when we dispatch a request to get a new one and when we are revoking one. 
   config.jwt do |jwt|
-    jwt.secret = Rails.application.credentials.fetch(:secret_key_base)
+    jwt.secret = ENV['SECRET_KEY_BASE']
     jwt.dispatch_requests = [
       ['POST', %r{^/login$}]
     ]
