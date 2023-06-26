@@ -84,7 +84,3 @@ production:
   database: SocialSphere_backend_production
   username: SocialSphere_backend
   password: <%= ENV["SOCIALSPHERE_BACKEND_DATABASE_PASSWORD"] %>
-  adapter: postgresql
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  database: <%= ENV['DATABASE_URL'] %>
