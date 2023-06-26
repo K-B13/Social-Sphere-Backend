@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   get '/users/allFriends/:id', to: 'users#all_friends' 
 
   get '/users/:user_id/user_and_friends_posts', to: 'posts#homepage'
-  get '/', to: 'users#index'
+  root 'users#index'
 
   resources :friendships, only: [:create]
 
