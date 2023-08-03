@@ -18,7 +18,7 @@ class Friendship < ApplicationRecord
   end
 
   def destroy_inverse_friendship
-    #finds the record where the friend is friends with with the user and also destroys it.
+    #finds the record where the friend is friends with the user and also destroys it.
     inverse_friendship = friend.friendships.find_by(friend: user)
     inverse_friendship.destroy if inverse_friendship.present?
   end

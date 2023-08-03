@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   get '/users/:user_id/friend_requests/:id', to: 'users#show_user'
   patch '/friend_requests/:user_id/:id', to: 'friend_requests#update'
   delete '/friendships/:current_user_id/:friend_user_id', to: 'friendships#destroy'
+  
   get '/users/getFriends/:id', to: 'users#retrieve_friends'
   get '/users/allFriends/:id', to: 'users#all_friends' 
 
