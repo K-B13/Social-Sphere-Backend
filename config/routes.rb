@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :comments do
       resources :likes, only: [:create, :destroy]
     end
+    resources :messages
   end
 
   post 'users/:user_id/posts/:post_id/comments/:id', to: 'comments#create_comment'
