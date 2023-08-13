@@ -78,14 +78,17 @@ class UsersController < ApplicationController
 
   def retrieve_friends
     # Grabs a sample of friends for a given user
-    @lim_friends = @user.friends.limit(4)
+    @sorted_friends = user_friends_sorted_by_last_message(@user)
+    @lim_friends = @sorted_friends.first(4)
+    print(@lim_friends)
     render json: @lim_friends
   end
 
   def all_friends
     # Grabs all friends for a given user
-    @friends = @user.friends
-    render json: {friends: @friends, user: @user}
+    @sorted_friends = user_friends_sorted_by_last_message(@user)
+    print @sorted_friends
+    render json: {friends: @sorted_friends, user: @user}
   end
 
   private
@@ -99,4 +102,21 @@ class UsersController < ApplicationController
     # Finds the user
     @user = User.find(params[:id])
   end
+
+  def user_friends_sorted_by_last_message(user)
+    friends = user.friends
+  
+    # Sort the friends based on the timestamp of the last message
+    sorted_friends = friends.sort_by do |friend|
+      # Find the last message exchanged between the user and the friend
+      last_message = Message.where('(user_id = ? AND recipient_id = ?) OR (user_id = ? AND recipient_id = ?)', user.id, friend.id, friend.id, user.id).order(created_at: :desc).first
+  
+      # Sort by the timestamp of the last message, or a default time if no messages exist
+      last_message&.created_at || Time.at(0)
+    end
+  
+    # Reverse the order to have the most recent last messages first
+    sorted_friends.reverse
+  end
+  
 end

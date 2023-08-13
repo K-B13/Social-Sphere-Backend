@@ -1,13 +1,12 @@
 class MessagesController < ApplicationController
 
-  before_action :find_user  
+  before_action :authenticate_user!
   
   def index
-    # User is found and stored in the id @user before this actions starts
-    # Then the other user is found so the messages between the two can be found.
-    # got_messages = @user.received_messages.find_by(user_id: friend_user.id)
-    # sent_messages = @user.sent_messages
-    # render json: {messagesSent: sent_messages , messagesReceived: got_messages}
+    @recipient_id = params[:user_id]
+    @messages = Message.where("(user_id = ? AND recipient_id = ?) OR (user_id = ? AND recipient_id = ?)", current_user.id, @recipient_id, @recipient_id, current_user.id).order(created_at: :asc)
+
+    render json: @messages
   end
 
   def show
@@ -15,12 +14,17 @@ class MessagesController < ApplicationController
   end
 
   def create
-    # Create the message and save it to the database
-    message = Message.create(message_params)
-
-    # Broadcast the message to both users' ConversationChannel
-    ConversationChannel.broadcast_to(message.user, message: message.content, user: message.user.username)
-    ConversationChannel.broadcast_to(message.recipient, message: message.content, user: message.user.username)
+    @recipient_id = params[:user_id]
+    @message = current_user.sent_messages.new(message_params)
+    @message.recipient_id = @recipient_id
+    @message.user_id = current_user.id
+    if @message.save
+    ActionCable.server.broadcast("conversation_#{@recipient_id}", @message)
+    ActionCable.server.broadcast("conversation_#{current_user.id}", @message)
+    render json: {message: @message}
+    else
+      render json: @message.errors, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -33,11 +37,7 @@ class MessagesController < ApplicationController
 
   private
 
-  def find_user
-    @user = User.find(params[:user_id])
-  end
-
   def message_params
-    params.require(:message).permit(:content, :user_id, :recipient)
+    params.require(:message).permit(:content)
   end
 end
