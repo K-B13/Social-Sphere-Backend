@@ -77,17 +77,16 @@ class UsersController < ApplicationController
   end
 
   def retrieve_friends
-    # Grabs a sample of friends for a given user
+    # Grabs all the users and sorts them by when was their last message, sent or received.
     @sorted_friends = user_friends_sorted_by_last_message(@user)
+    # selects the first four friends and sends that back
     @lim_friends = @sorted_friends.first(4)
-    print(@lim_friends)
     render json: @lim_friends
   end
 
   def all_friends
-    # Grabs all friends for a given user
+    # Grabs all the users and sorts them by when was their last message, sent or received.
     @sorted_friends = user_friends_sorted_by_last_message(@user)
-    print @sorted_friends
     render json: {friends: @sorted_friends, user: @user}
   end
 

@@ -15,9 +15,11 @@ class MessagesController < ApplicationController
 
   def create
     @recipient_id = params[:user_id]
+    
     @message = current_user.sent_messages.new(message_params)
     @message.recipient_id = @recipient_id
     @message.user_id = current_user.id
+    @message.sender = current_user.username
     if @message.save
     ActionCable.server.broadcast("conversation_#{@recipient_id}", @message)
     ActionCable.server.broadcast("conversation_#{current_user.id}", @message)
