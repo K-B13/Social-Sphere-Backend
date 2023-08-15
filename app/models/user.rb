@@ -3,6 +3,8 @@ class User < ApplicationRecord
   has_many :posts, dependent: :destroy
   has_many :comments, through: :posts
   has_many :likes, dependent: :destroy
+  has_many :sent_messages, class_name: 'Message', foreign_key: 'user_id'
+  has_many :received_messages, class_name: 'Message', foreign_key: 'recipient_id'
 
   has_many :friendships, dependent: :destroy
   has_many :friends, through: :friendships
