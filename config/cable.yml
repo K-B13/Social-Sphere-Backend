@@ -8,5 +8,5 @@ test:
 
 production:
   adapter: redis
-  url: redis://default:XNgzTgYkYTzJ1NfFoeBOzSCNFn3ga6cn@redis-11845.c281.us-east-1-2.ec2.cloud.redislabs.com:11845
+  url: redis://localhost:6379/1
   channel_prefix: the_social_sphere_production
