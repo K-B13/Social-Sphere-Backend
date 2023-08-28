@@ -213,7 +213,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.5)
-  redis (~> 4.0)
+  redis
   tzinfo-data
 
 RUBY VERSION
