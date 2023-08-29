@@ -29,18 +29,20 @@ Rails.application.routes.draw do
 
   get '/friend_requests/all_sent/:id', to: 'friend_requests#all_sent'
 
-  get '/users/:user_id/friend_requests/:id', to: 'users#show_user'
-
   patch '/friend_requests/:user_id/:id', to: 'friend_requests#update'
-
-  delete '/friendships/:current_user_id/:friend_user_id', to: 'friendships#destroy'
-
-  get '/users/getFriends/:id', to: 'users#retrieve_friends'
-  
-  get '/users/allFriends/:id', to: 'users#all_friends' 
 
   get '/users/:user_id/user_and_friends_posts', to: 'posts#homepage'
   root 'users#index'
+
+  get '/users/:user_id/friend_requests/:id', to: 'users#show_user'
+    
+  get '/users/allFriends/:id', to: 'users#all_friends' 
+
+  get '/users/getFriends/:id', to: 'users#retrieve_friends'
+
+
+  delete '/friendships/:current_user_id/:friend_user_id', to: 'friendships#destroy'
+
 
   resources :friendships, only: [:create]
 
