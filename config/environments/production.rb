@@ -25,7 +25,7 @@ Rails.application.configure do
 
   Devise.secret_key = ENV['SECRET_KEY_BASE']
   
-  # Rails.application.credentials.fetch(:secret_key_base)
+  Rails.application.credentials.fetch(:secret_key_base)
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
